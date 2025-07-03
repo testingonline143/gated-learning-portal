@@ -1,16 +1,67 @@
+import { useEffect, useState } from "react";
 import { CourseCard } from "@/components/CourseCard";
-import { courses } from "@/data/courses";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  image_url: string;
+  level: "Beginner" | "Intermediate" | "Advanced";
+  duration: string;
+  instructor: string;
+  students: number;
+}
+
 export const CoursesSection = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const handlePurchase = (courseId: string) => {
-    // TODO: Integrate with Stripe checkout
-    toast({
-      title: "Coming Soon!",
-      description: "Stripe integration will be added to handle course purchases.",
-    });
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setCourses((data || []) as Course[]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load courses",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePurchase = async (courseId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { course_id: courseId }
+      });
+
+      if (error) throw error;
+      
+      if (data.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create checkout session",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -28,21 +79,27 @@ export const CoursesSection = () => {
         </div>
 
         {/* Course Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {courses.map((course) => (
-            <CourseCard
-              key={course.id}
-              id={course.id}
-              title={course.title}
-              description={course.description}
-              price={course.price}
-              image={course.image}
-              level={course.level}
-              duration={course.duration}
-              onPurchase={handlePurchase}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="text-lg text-muted-foreground">Loading courses...</div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {courses.map((course) => (
+              <CourseCard
+                key={course.id}
+                id={course.id}
+                title={course.title}
+                description={course.description}
+                price={course.price / 100} // Convert cents to dollars
+                image={course.image_url}
+                level={course.level}
+                duration={course.duration}
+                onPurchase={handlePurchase}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Features Banner */}
         <div className="mt-16 bg-gradient-card rounded-xl p-8 border border-course-border shadow-course">

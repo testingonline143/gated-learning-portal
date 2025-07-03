@@ -1,30 +1,27 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { CoursesSection } from "@/components/CoursesSection";
 import { Footer } from "@/components/Footer";
-import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
-  const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = () => {
-    toast({
-      title: "Login Coming Soon!",
-      description: "Authentication will be integrated with Supabase.",
-    });
+    navigate('/auth');
   };
 
   const handleDashboard = () => {
-    toast({
-      title: "Dashboard Coming Soon!",
-      description: "User dashboard for purchased courses will be available after authentication setup.",
-    });
+    navigate('/dashboard');
   };
 
   return (
     <div className="min-h-screen bg-background font-inter">
       <Header 
-        isAuthenticated={false}
+        isAuthenticated={!!user}
         onLogin={handleLogin}
         onDashboard={handleDashboard}
       />
