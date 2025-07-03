@@ -1,12 +1,36 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Header } from "@/components/Header";
+import { Hero } from "@/components/Hero";
+import { CoursesSection } from "@/components/CoursesSection";
+import { Footer } from "@/components/Footer";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const { toast } = useToast();
+
+  const handleLogin = () => {
+    toast({
+      title: "Login Coming Soon!",
+      description: "Authentication will be integrated with Supabase.",
+    });
+  };
+
+  const handleDashboard = () => {
+    toast({
+      title: "Dashboard Coming Soon!",
+      description: "User dashboard for purchased courses will be available after authentication setup.",
+    });
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background font-inter">
+      <Header 
+        isAuthenticated={false}
+        onLogin={handleLogin}
+        onDashboard={handleDashboard}
+      />
+      <Hero />
+      <CoursesSection />
+      <Footer />
     </div>
   );
 };

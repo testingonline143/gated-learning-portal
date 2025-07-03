@@ -2,39 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* AITools Academy Design System - Modern Course Platform */
 
 @layer base {
   :root {
+    /* Core Colors - Based on Deep Navy & Indigo Brand */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 222 84% 4.9%; /* Deep Navy Text */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 84% 4.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Deep Navy (#0F172A) */
+    --primary: 222 84% 11%; 
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Accent: Indigo (#6366F1) */
+    --accent: 239 84% 67%;
+    --accent-foreground: 0 0% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Secondary: Soft Gray Backgrounds */
+    --secondary: 210 20% 97%;
+    --secondary-foreground: 222 84% 11%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Muted: Light Gray (#F8FAFC) */
+    --muted: 210 20% 98%;
+    --muted-foreground: 215 16% 47%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 239 84% 67%; /* Indigo ring */
+
+    /* Course Platform Specific Colors */
+    --course-card: 0 0% 100%;
+    --course-card-border: 220 13% 91%;
+    --price-highlight: 239 84% 67%;
+    --success: 142 76% 36%;
+    --success-foreground: 355 7% 97%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(239 84% 67%), hsl(222 84% 11%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 20% 98%));
+    
+    /* Shadows */
+    --shadow-course: 0 4px 6px -1px hsl(220 13% 91% / 0.1), 0 2px 4px -1px hsl(220 13% 91% / 0.06);
+    --shadow-elegant: 0 10px 15px -3px hsl(222 84% 11% / 0.1), 0 4px 6px -2px hsl(222 84% 11% / 0.05);
+    --shadow-glow: 0 0 0 1px hsl(239 84% 67% / 0.05);
 
     --radius: 0.5rem;
 
