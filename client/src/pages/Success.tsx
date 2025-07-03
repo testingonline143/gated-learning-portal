@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
+import { Link } from 'wouter';
 
 export default function Success() {
-  const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get('session_id');
+  // Get session_id from URL params manually since we're using wouter
+  const sessionId = new URLSearchParams(window.location.search).get('session_id');
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">

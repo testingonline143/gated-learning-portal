@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { CourseCard } from "@/components/CourseCard";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface Course {
@@ -8,7 +7,7 @@ interface Course {
   title: string;
   description: string;
   price: number;
-  image_url: string;
+  imageUrl: string;
   level: "Beginner" | "Intermediate" | "Advanced";
   duration: string;
   instructor: string;
@@ -26,13 +25,11 @@ export const CoursesSection = () => {
 
   const fetchCourses = async () => {
     try {
-      const { data, error } = await supabase
-        .from('courses')
-        .select('*')
-        .order('created_at', { ascending: true });
-
-      if (error) throw error;
-      setCourses((data || []) as Course[]);
+      const response = await fetch('/api/courses');
+      if (!response.ok) throw new Error('Failed to fetch courses');
+      
+      const data = await response.json();
+      setCourses(data);
     } catch (error) {
       toast({
         title: "Error",
@@ -46,14 +43,27 @@ export const CoursesSection = () => {
 
   const handlePurchase = async (courseId: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { course_id: courseId }
+      const response = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ courseId }),
+        credentials: 'include'
       });
 
-      if (error) throw error;
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.error || 'Failed to create checkout');
       
       if (data.url) {
-        window.open(data.url, '_blank');
+        window.location.href = data.url;
+      } else {
+        toast({
+          title: "Demo Mode",
+          description: data.message || "Stripe integration requires API keys for full functionality.",
+          variant: "default",
+        });
       }
     } catch (error) {
       toast({
@@ -92,7 +102,7 @@ export const CoursesSection = () => {
                 title={course.title}
                 description={course.description}
                 price={course.price / 100} // Convert cents to dollars
-                image={course.image_url}
+                image={course.imageUrl}
                 level={course.level}
                 duration={course.duration}
                 onPurchase={handlePurchase}

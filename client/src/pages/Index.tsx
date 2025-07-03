@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { CoursesSection } from "@/components/CoursesSection";
@@ -8,14 +7,18 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const [location, setLocation] = useLocation();
 
   const handleLogin = () => {
-    navigate('/auth');
+    setLocation('/auth');
   };
 
   const handleDashboard = () => {
-    navigate('/dashboard');
+    setLocation('/dashboard');
+  };
+
+  const handleAdmin = () => {
+    setLocation('/admin');
   };
 
   return (
@@ -24,6 +27,7 @@ const Index = () => {
         isAuthenticated={!!user}
         onLogin={handleLogin}
         onDashboard={handleDashboard}
+        onAdmin={handleAdmin}
       />
       <Hero />
       <CoursesSection />

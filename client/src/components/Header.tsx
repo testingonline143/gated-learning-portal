@@ -5,9 +5,10 @@ interface HeaderProps {
   isAuthenticated?: boolean;
   onLogin?: () => void;
   onDashboard?: () => void;
+  onAdmin?: () => void;
 }
 
-export const Header = ({ isAuthenticated, onLogin, onDashboard }: HeaderProps) => {
+export const Header = ({ isAuthenticated, onLogin, onDashboard, onAdmin }: HeaderProps) => {
   return (
     <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,14 +45,23 @@ export const Header = ({ isAuthenticated, onLogin, onDashboard }: HeaderProps) =
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
-              <Button 
-                variant="course" 
-                onClick={onDashboard}
-                className="flex items-center space-x-2"
-              >
-                <User className="h-4 w-4" />
-                <span>Dashboard</span>
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button 
+                  variant="outline" 
+                  onClick={onAdmin}
+                  className="flex items-center space-x-2"
+                >
+                  <span>Admin</span>
+                </Button>
+                <Button 
+                  variant="course" 
+                  onClick={onDashboard}
+                  className="flex items-center space-x-2"
+                >
+                  <User className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Button>
+              </div>
             ) : (
               <Button 
                 variant="outline" 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
@@ -16,9 +15,9 @@ interface Course {
 
 interface Purchase {
   id: string;
-  course_id: string;
+  courseId: string;
   status: string;
-  courses: Course;
+  course: Course;
 }
 
 export default function Dashboard() {
@@ -35,25 +34,20 @@ export default function Dashboard() {
 
   const fetchPurchases = async () => {
     try {
-      const { data, error } = await supabase
-        .from('purchases')
-        .select(`
-          id,
-          course_id,
-          status,
-          courses (
-            id,
-            title,
-            description,
-            instructor,
-            duration
-          )
-        `)
-        .eq('user_id', user?.id)
-        .eq('status', 'completed');
+      const response = await fetch('/api/purchases', {
+        credentials: 'include'
+      });
 
-      if (error) throw error;
-      setPurchases(data || []);
+      if (!response.ok) {
+        if (response.status === 401) {
+          // User not authenticated, redirect to login
+          return;
+        }
+        throw new Error('Failed to fetch purchases');
+      }
+
+      const data = await response.json();
+      setPurchases(data.filter((purchase: Purchase) => purchase.status === 'completed'));
     } catch (error) {
       toast({
         title: "Error",
@@ -124,15 +118,15 @@ export default function Dashboard() {
             {purchases.map((purchase) => (
               <Card key={purchase.id} className="hover:shadow-elegant transition-all duration-300">
                 <CardHeader>
-                  <CardTitle className="text-xl">{purchase.courses.title}</CardTitle>
+                  <CardTitle className="text-xl">{purchase.course.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground mb-4 line-clamp-3">
-                    {purchase.courses.description}
+                    {purchase.course.description}
                   </p>
                   <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
-                    <span>By {purchase.courses.instructor}</span>
-                    <span>{purchase.courses.duration}</span>
+                    <span>By {purchase.course.instructor}</span>
+                    <span>{purchase.course.duration}</span>
                   </div>
                   <Button className="w-full" variant="course">
                     Access Course
